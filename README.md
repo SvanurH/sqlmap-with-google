@@ -18,5 +18,3 @@
 >>set google query_file filename
 >>start
 ```
-
-
