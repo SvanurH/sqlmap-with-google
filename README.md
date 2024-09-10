@@ -13,8 +13,11 @@
 
 使用命令
 ```
-
->>set google max_result_return 10
->>set google query_file filename
->>start
-```>
+set ...
+    google:
+        set google query <query> google查询关键字
+        set google max_result_return <number> 最大返回条数(max 400)
+        set google proxy <proxy> google代理
+        set google query_file 关键字文件
+        set save vulner_url <file> 保存漏洞url到文件
+```
