@@ -163,3 +163,4 @@ cython_debug/
 # Custom directories
 test/
 yagooglesearch.py.log
+vulner.txt
