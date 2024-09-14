@@ -86,23 +86,29 @@ class GooSql(cmd.Cmd):
             except IndexError:
                 show_message("command error", MessageType.FAILED)
                 return
-            m = getattr(self, method)
-            if callable(m):
-                m(_arg)
+            try:
+                m = getattr(self, method)
+                if callable(m):
+                    m(_arg)
+            except AttributeError:
+                show_message("command error", MessageType.FAILED)
         elif method_head_name == "show":
             method = f"{method_head_name}_{args[0]}_{args[1]}"
-            m = getattr(self, method)
-            if callable(m):
-                m()
+            try:
+                m = getattr(self, method)
+                if callable(m):
+                    m()
+            except AttributeError:
+                show_message("command error", MessageType.FAILED)
 
     def do_set(self, arg):
         """set ...
             google:
-                set google query <query> google查询关键字
-                set google max_result_return <number> 最大返回条数(max 400)
-                set google proxy <proxy> google代理
-                set google query_file 关键字文件
-            set save vulner_url <file> 保存漏洞url到文件
+                set google query <query>:设置google查询关键字
+                set google max_result_return <number>:设置最大返回条数(max 400)
+                set google proxy <proxy>：设置google代理
+                set google query_file：设置关键字文件
+            set save vulner_url <file>：设置保存漏洞url到文件
         """
         self.load_method("set", arg)
 
@@ -130,11 +136,16 @@ class GooSql(cmd.Cmd):
         show_message("设置成功", MessageType.SUCCESS)
 
     def do_google(self, arg):
+        """google:开始google搜索"""
         res = self.google_search()
         for item in res:
             self.urls.put(item["url"], block=True)
 
     def do_show(self, arg):
+        """show...
+            show google conf：显示google配置信息
+            show google urls：显示google搜索的url
+        """
         self.load_method("show", arg)
 
     def show_google_conf(self):
@@ -150,9 +161,12 @@ class GooSql(cmd.Cmd):
         super().do_help(arg)
 
     def do_EOF(self):
+        """"""
         print("bye~")
+        exit(-1)
 
     def sqlmap(self, url):
+        """>>sqlmap <url>: use sqlmapApi scan one url"""
         self.engine.start_scan({"url": url})
 
     def get_vulner_urls(self):
@@ -164,7 +178,7 @@ class GooSql(cmd.Cmd):
                 self.save_vulner_urls(url)
         show_message(f"vulner url num: {len(self.tmp_vulner)}", MessageType.SUCCESS)
 
-    def save_vulner_urls(self,url):
+    def save_vulner_urls(self, url):
         if self.save_vulner_file != "":
             try:
                 f = open(self.save_vulner_file, "a+")
@@ -173,7 +187,7 @@ class GooSql(cmd.Cmd):
                 show_message(f"save failed: {e.args[-1]}", MessageType.FAILED)
 
     def do_start(self, arg):
-        """start 开始自动化sqlmap检测"""
+        """start: 开始自动化运行"""
         show_message("loading file...")
         keywords = self.load_file()
         if not keywords:
