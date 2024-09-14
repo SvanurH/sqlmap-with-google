@@ -20,4 +20,7 @@ set ...
         set google proxy <proxy> google代理
         set google query_file 关键字文件
         set save vulner_url <file> 保存漏洞url到文件
+
+show google conf 显示google搜索配置
+start 开始自动化测试
 ```
